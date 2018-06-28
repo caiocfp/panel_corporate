@@ -345,6 +345,98 @@ TobynOut <- merge.data.frame(investRate3, TobynOut,
 #################Expurgar os outliers criando um painel com InvestRate3#################
 ########################################################################################
 
+#################Expurgar os outliers criando um painel com InvestRate3#################
+########################################################################################
+
+#taxa de investimento#
+
+i_Rate3_Outless <- merge.data.frame(investRate3,
+                                    anti_join(investRate3,taxaOut,
+                                                by = "taxaInvest"))
+##
+
+#vendas por capital#
+
+i_Rate3_Outless <- merge.data.frame(i_Rate3_Outless,
+                                    anti_join(i_Rate3_Outless,vendasOut,
+                                              by = "vendas_K"))
+
+##
+
+#q_tobyn#
+
+
+i_Rate3_Outless <- merge.data.frame(i_Rate3_Outless,
+                                    anti_join(i_Rate3_Outless,TobynOut,
+                                              by = "q_tobyn"))
+
+################# modelo de painel##################################################
+#####################################################################################
+
+
+#instalar pacote#
+
+install.packages("plm")
+library(plm)
+
+##
+
+
+#setar o painel#
+
+
+attach(i_Rate3_Outless)
+
+Y <- cbind(as.numeric(taxaInvest))
+X <- cbind(i_Rate3_Outless$vendas_K,
+           i_Rate3_Outless$vendas_K1,
+           i_Rate3_Outless$vendas_K2,
+           i_Rate3_Outless$vendas_K3)
+           
+
+
+dadosIR3 <- pdata.frame(i_Rate3_Outless,
+                     index = c("COD_FIRMA",
+                             "ANO"))
+
+
+##sumário##
+
+summary(Y)
+summary(X)
+
+
+#modelo em painel fixo#
+
+fixo3 <- plm(Y ~ X,
+             data = dadosIR3,
+             model = "within")
+
+
+summary(fixo3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #taxa de investimento#
 
 i_Rate3_Outless <- merge.data.frame(investRate3,
