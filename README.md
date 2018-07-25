@@ -1,9 +1,8 @@
-# panel_corporate
 ########################################## Setar diretório ##############################
 ########################################################################################
 
 
-setwd("C:/Users/Caio/Desktop/Arquivos Caio/Mestrado/Dissertação/dados/corporativo")
+setwd("C:/Users/caio.falconi/Documents/Corp_ms")
 
 
 ##
@@ -28,12 +27,18 @@ ativoTotal_1 <- read.csv("ativ_tot-1.csv",
                        stringsAsFactors = T)
 ##
 
+
+#######Ativo Circulante################
+
 ativoCirc <- read.csv("atv_circ.csv",
                        header = T,
                        sep = ";",
                        dec = ".",
                        na.strings = "-",
                        stringsAsFactors = T)
+
+###########Caixa Equivalentes de Caixa##############
+
 
 caixaEquiv <- read.csv("caixa_eq.csv",
                       header = T,
@@ -42,12 +47,26 @@ caixaEquiv <- read.csv("caixa_eq.csv",
                       na.strings = "-",
                       stringsAsFactors = T)
 
+
+#############Capex#####################################
+
 capex <- read.csv("capex.csv",
                      header = T,
                      sep = ";",
                      dec = ".",
                      na.strings = "-",
                      stringsAsFactors = T)
+
+###############Comex#####################
+
+comex_R <- read.csv("comex_Real.csv",
+                  header = T,
+                  sep = ";",
+                  dec = ".",
+                  na.strings = "#VALOR!",
+                  stringsAsFactors = T)
+
+#############Depreciação##########################
 
 deprec <- read.csv("depr_amor.csv",
                    header = T,
@@ -57,7 +76,7 @@ deprec <- read.csv("depr_amor.csv",
                    stringsAsFactors = T)
 
 
-
+############Dívida Total###########################
 
 dividTotal <- read.csv("dvd_tot.csv",
               header = T,
@@ -75,7 +94,9 @@ Total1Daef <-  read.csv("div_tot_1daefa.csv",
                         dec = ".",
                         na.strings = "-",
                         stringsAsFactors = T)
-##
+
+##################Ebit#######################################
+
 ebit <- read.csv("ebit.csv",
                        header = T,
                        sep = ";",
@@ -83,12 +104,18 @@ ebit <- read.csv("ebit.csv",
                        na.strings = "-",
                        stringsAsFactors = T)
 
+#################imobilizado##############################
+
 imobil <- read.csv("imob.csv",
                    header = T,
                    sep = ";",
                    dec = ".",
                    na.strings = "-",
                    stringsAsFactors = T)
+
+#converte 0 em Na#
+
+ imobil[,5][imobil[,5] == 0] <- NA
 
 #imobilizado com 1 defasagem ----- indica ano t, mas refere-se à observação no t-1#
 
@@ -100,24 +127,15 @@ imobil_1 <- read.csv("imob_1.csv",
                    na.strings = "-",
                    stringsAsFactors = T)
 
-
-#descarta valores nulos e inferiores de imobilizado# 
-
-imobilPos <- data.frame(imobil %>% 
-                          if (IMOB > 0) {
-                            IMOB = IMOB
-                          } else {
-                            IMOB = NA   
-                          })
+#converte 0 em Na#
 
 
-
-names(imobilPos)[names(imobilPos) == "IMOB"] <- "Kpositivo"
+imobil_1[,5][imobil_1[,5] == 0] <- NA
 
 
 ##
 
-
+#################Investimento em Capital###################
 
 investCap <- read.csv("inv_k.csv",
                    header = T,
@@ -127,12 +145,17 @@ investCap <- read.csv("inv_k.csv",
                    stringsAsFactors = T)
 
 
+############Investimento por Patrimônio Líquido################
+
+
 investPatLiq <- read.csv("inv_PatLiq.csv",
                       header = T,
                       sep = ";",
                       dec = ".",
                       na.strings = "-",
                       stringsAsFactors = T)
+
+#############Passivo Circulante###############################
 
 passivCirc <- read.csv("psv_circ.csv",
                          header = T,
@@ -142,6 +165,8 @@ passivCirc <- read.csv("psv_circ.csv",
                          stringsAsFactors = T)
 
  
+#RECEITA E DEFASAGENS#####################################################################
+
 receita <- read.csv("receita.csv",
                        header = T,
                        sep = ";",
@@ -150,6 +175,57 @@ receita <- read.csv("receita.csv",
                        stringsAsFactors = T)
 
 
+receita_1 <- read.csv("receita_1.csv",
+                    header = T,
+                    sep = ";",
+                    dec = ".",
+                    na.strings = "-",
+                    stringsAsFactors = T)
+
+receita_2 <- read.csv("receita_2.csv",
+                      header = T,
+                      sep = ";",
+                      dec = ".",
+                      na.strings = "-",
+                      stringsAsFactors = T)
+
+receita_3 <- read.csv("receita_3.csv",
+                      header = T,
+                      sep = ";",
+                      dec = ".",
+                      na.strings = "-",
+                      stringsAsFactors = T)
+
+receita <- merge.data.frame(receita, receita_1,
+                           by = c(      "FIRMA",
+                                      
+                                        "ANO",
+                                        "SETOR")) 
+
+receita <- merge.data.frame(receita, receita_2,
+                            by = c(      "FIRMA",
+                                         
+                                         "ANO",
+                                         "SETOR")) 
+
+receita <- merge.data.frame(receita, receita_3,
+                            by = c(      "FIRMA",
+                                      
+                                         "ANO",
+                                         "SETOR")) 
+receita <- receita %>%
+                   select(COD_FIRMA,
+                          FIRMA,
+                          SETOR,
+                          ANO,
+                          RECEITA,
+                          RECEITA.1,
+                          RECEITA.2,
+                          RECEITA.3)
+
+
+################Valor de Mercado##########################
+
 valorMercado <- read.csv("valor_merc.csv",
                     header = T,
                     sep = ";",
@@ -157,6 +233,14 @@ valorMercado <- read.csv("valor_merc.csv",
                     na.strings = "#DIV/0!",
                     stringsAsFactors = T)
 
+##############Vendas Setor###################################
+
+vendas_SETOR <- read.csv("vendas_setor_R.csv",
+                         header = T,
+                         sep = ";",
+                         dec = ".",
+                         na.strings = "#VALOR!",
+                         stringsAsFactors = T)
 
 ##################################Construção de variáveis##################################
 ###########################################################################################
@@ -171,7 +255,7 @@ cash_flowK <- merge(ebit, deprec,
                            "ANO",
                            "SETOR")) 
 
-cash_flowK <- merge(cash_flowK, imobilPos,
+cash_flowK <- merge(cash_flowK, imobil,
                     by = c("FIRMA",
                            "COD_FIRMA",
                            "ANO",
@@ -180,20 +264,51 @@ cash_flowK <- merge(cash_flowK, imobilPos,
 cash_flowK <- within.data.frame(cash_flowK,
                                 cash_K <- (EBIT + DEPR_AMOR)/IMOB)
 
+
+cash_flowK <- cash_flowK %>%
+              select(COD_FIRMA,
+                     FIRMA,
+                     SETOR,
+                     ANO,
+                     cash_K)
+
+
+
 summary(cash_flowK$cash_K)
 
 
+##############Cash Flow sem negativos################################
 
 
+cashFlowPs <- data.frame(cash_flowK)
+
+cashFlowPs[,5][cashFlowPs[,5] < 0] <- NA
+
+summary(cashFlowPs)
+
+sum(!is.na(cashFlowPs$cash_K))
 
 ##debt_to_assets##
-
 debt_to_assets <- c(dividTotal$DVD_TOT/ativoTotal$ATIVO_TOT)
 
 
 
 summary(debt_to_assets)
 ####
+
+
+##Import rate##
+
+Imp_R <- merge(vendas_SETOR,comex_R,
+                by = c("FIRMA",
+                       
+                       "ANO",
+                       "SETOR")) 
+
+Imp_R <- within.data.frame(Imp_R,
+                           Taxa_Imp <- (imp/(VENDAS_SETOR+imp)))
+
+summary(Imp_R$Taxa_Imp)
 
 ##Investimento 1##
 
@@ -203,13 +318,46 @@ investRate1 <- merge(investCap,imobil_1,
     
 investRate1 <- within.data.frame(investRate1, taxaInvest <- INV_K/IMOB1)
 
+investRate1 <- investRate1 %>%
+         select(COD_FIRMA,
+         FIRMA,
+         SETOR,
+         ANO,
+         taxaInvest)
+
 summary(investRate1$taxaInvest)
                  
 ####                  
                
 ##Investimento 2##
 
-investRate2 <- c((capex$CAPEX - deprec$DEPR_AMOR)/ativoTotal_1$ATV_TOT.1)
+investRate2 <- merge(capex,deprec,
+                     by = c("COD_FIRMA",
+                            "FIRMA",
+                            "SETOR",
+                            "ANO"))
+
+
+
+
+investRate2 <- merge(investRate2,ativoTotal_1,
+                     by = c("COD_FIRMA",
+                            "FIRMA",
+                            "SETOR",
+                            "ANO"))
+
+
+
+investRate2 <- within.data.frame(investRate2, taxaInvest <- (CAPEX - DEPR_AMOR)/ATV_TOT.1)
+
+
+
+investRate2 <- investRate2 %>%
+  select(COD_FIRMA,
+         FIRMA,
+         SETOR,
+         ANO,
+         taxaInvest)
 
 summary(investRate2)
 
@@ -230,46 +378,205 @@ investRate3 <- merge(investRate3,imobil_1,
 
 investRate3 <- within.data.frame(investRate3, taxaInvest <- (CAPEX - DEPR_AMOR)/IMOB1 )
 
+investRate3 <- investRate3 %>%
+  select(
+    FIRMA,
+    SETOR,
+    ANO,
+    taxaInvest)                             
+
+
 summary(investRate3$taxaInvest)
 
 ##q-Tobyn##
 
-q_tobyn <- c((valorMercado$VALOR_MERC
-              + dividTotal$DVD_TOT
-              + ativoCirc$ATV_CIRC
-              - passivCirc$PSV_CIRC)/
-               ativoTotal$ATIVO_TOT)
+q_tobyn <- merge.data.frame(valorMercado, ativoTotal,
+                            by = c("COD_FIRMA",
+                                   "FIRMA",
+                                   "SETOR",
+                                   "ANO"))
 
-summary(q_tobyn)
+q_tobyn <- merge.data.frame(q_tobyn, ativoCirc,
+                           by = c("COD_FIRMA",
+                                  "FIRMA",
+                                  "SETOR",
+                                  "ANO"))
+
+q_tobyn <- merge.data.frame(q_tobyn, passivCirc,
+                            by = c("COD_FIRMA",
+                                   "FIRMA",
+                                   "SETOR",
+                                   "ANO"))
+
+q_tobyn <- merge.data.frame(q_tobyn, dividTotal,
+                            by = c("COD_FIRMA",
+                                   "FIRMA",
+                                   "SETOR",
+                                   "ANO"))
+
+attach(q_tobyn)
+
+mean(VALOR_MERC)
+mean()
+
+q_tobyn <- within.data.frame(q_tobyn, 
+                             q_tobyn <- c(
+                                          as.numeric(
+                                            (VALOR_MERC+(PSV_CIRC + DVD_TOT - ATV_CIRC))
+                                            /
+                                            (ATIVO_TOT)
+                                            )
+                                          )
+                                       )
+                                          
+
+
+
+q_tobyn <- q_tobyn %>%
+  select(
+    FIRMA,
+    SETOR,
+    ANO,
+    q_tobyn)      
+
+class(q_tobyn$q_tobyn)
+
+                             
+sum(!is.na(q_tobyn$q_tobyn))
+
+mean(q_tobyn$q_tobyn, na.rm = TRUE)
 
 ##price-cost-margin##
 
-PCM <- c(ebit$EBIT/receita$RECEITA)
+PCM <- merge.data.frame(ebit, receita,
+                            by = c(
+                                   "FIRMA",
+                                   "SETOR",
+                                   "ANO"))
+
+
+PCM <- within.data.frame(PCM, pcm <- c(EBIT/RECEITA))
+
+PCM <- PCM %>%
+  select(
+    FIRMA,
+    SETOR,
+    ANO,
+    pcm)    
 
 
 
-##data frame Y = InvestRate3##
+#Vendas por Capital (imobilizado)###########################################
+
+vendas_K <- merge.data.frame(receita,imobil,
+                             by = c(
+                                    "FIRMA",
+                                    "SETOR",
+                                    "ANO"))
+
+vendas_K <- within.data.frame(vendas_K, 
+                              vendas_K <- c(
+                                RECEITA/IMOB
+                              )
+                              )
+
+
+            
+  
+
+vendas_K <- within.data.frame(vendas_K, 
+                              vendas_K1 <- lag(vendas_K))
+
+vendas_K <- within.data.frame(vendas_K, 
+                              vendas_K2 <- lag(vendas_K1))
+
+
+vendas_K <- within.data.frame(vendas_K, 
+                              vendas_K3 <- lag(vendas_K2))
+
+vendas_K <- vendas_K %>%
+                      select(FIRMA,
+                             SETOR,
+                             ANO,
+                             vendas_K,
+                             vendas_K1,
+                             vendas_K2,
+                             vendas_K3)  
+
+
+##################Vendas por Setor-LN################################
+
+vendas_SETOR <- within.data.frame(vendas_SETOR,
+                                  lnVendas <- c(log(VENDAS_SETOR_r)))
+
+##data frame Y = InvestRate3############################################
 ##acelerador de vendas##
 
-investRate3 <- cbind(investRate3, receita$RECEITA)
-investRate3 <- cbind(investRate3, imobil$IMOB )
-investRate3 <- cbind(investRate3, q_tobyn)
-
-names(investRate3)[names(investRate3) == "receita$RECEITA"] <- "vendas"
-names(investRate3)[names(investRate3) == "imobil$IMOB"] <- "K"
-names(investRate3)[names(investRate3) == "IMOB1"] <- "K-1"
 
 
-investRate3 <- merge(investRate3,imobilPos,
-                     by = c("COD_FIRMA",
+investRate3 <- merge.data.frame(investRate3,q_tobyn,
+                                by = c(
+                                       "FIRMA",
+                                       "SETOR",
+                                       "ANO"))
+
+
+investRate3 <- merge(investRate3,vendas_K,
+                     by = c(
                             "FIRMA",
                             "SETOR",
                             "ANO"))
 
 
 
-investRate3 <- within.data.frame(investRate3, vendas_K <- (vendas/Kpositivo))
+investRate3 <- merge(investRate3,cashFlowPs,
+                     by = c(
+                       "FIRMA",
+                       "SETOR",
+                       "ANO"))
 
+investRate3 <- merge(investRate3,vendas_SETOR,
+                     by = c(
+                       "FIRMA",
+                       "SETOR",
+                       "ANO"))
+
+investRate3 <- merge(investRate3,PCM,
+                     by = c(
+                       "FIRMA",
+                       "SETOR",
+                       "ANO"))
+
+investRate3 <- merge(investRate3,Imp_R,
+                     by = c(
+                       "FIRMA",
+                       "SETOR",
+                       "ANO"))
+
+investRate3 <- cbind(investRate3,
+                     debt_to_assets)
+
+
+investRate3 <- investRate3 %>%
+                   select( - COD_FIRMA)
+
+investRate3 <- investRate3 %>%
+  select( - ipca)
+                            
+investRate3 <- investRate3 %>%
+  select( - VENDAS_SETOR)
+
+investRate3 <- investRate3 %>%
+  select( - VENDAS_SETOR_r)
+
+investRate3 <- investRate3 %>%
+  select( - exp)
+
+investRate3 <- investRate3 %>%
+  select( - imp)
+
+investRate3 <- within.data.frame(investRate3,
+                                 taxaInvest1 <- lag(taxaInvest))
 
 #defasagem das vendas#
 
@@ -287,88 +594,10 @@ sum(!is.na(investRate3$q_tobyn))
   summary(investRate3 %>%
             select(vendas_K,
                     taxaInvest,
-                   q_tobyn))
-  
-#####################################outliers#########################################
-######################################################################################
-  
-#Taxa de Investimento#  
-
- ggplot(investRate3, 
-                    aes(y = taxaInvest,
-                        x = "Firma")) +
-  geom_boxplot(outlier.color = "red")          
-
- 
-boxTaxa <- (boxplot(taxaInvest~ANO, 
-            data = investRate3)) 
-
-taxaOut <- data.frame(taxaInvest = as.numeric(c(boxTaxa$out)))
-  
-taxaOut <- merge.data.frame(investRate3, taxaOut,
-                            by = "taxaInvest")               
-
-##
-
-#Vendas por capital#
-
-ggplot(investRate3, 
-       aes(y = vendas_K,
-           x = "Firma")) +
-  geom_boxplot(outlier.color = "red")  
-
-boxVendas <- (boxplot(vendas_K~ANO, 
-                    data = investRate3)) 
-
-vendasOut <- data.frame(vendas_K = as.numeric(c(boxVendas$out)))
-
-vendasOut <- merge.data.frame(investRate3, vendasOut,
-                            by = "vendas_K")   
-##
-
-##q_tobyn##
-
-
-ggplot(investRate3, 
-       aes(y = q_tobyn,
-           x = "Firma")) +
-  geom_boxplot(outlier.color = "red")  
-
-boxTobyn <- (boxplot(q_tobyn~ANO, 
-                      data = investRate3)) 
-
-TobynOut <- data.frame(q_tobyn = as.numeric(c(boxTobyn$out)))
-
-TobynOut <- merge.data.frame(investRate3, TobynOut,
-                              by = "q_tobyn")
-
-#################Expurgar os outliers criando um painel com InvestRate3#################
-########################################################################################
-
-#################Expurgar os outliers criando um painel com InvestRate3#################
-########################################################################################
-
-#taxa de investimento#
-
-i_Rate3_Outless <- merge.data.frame(investRate3,
-                                    anti_join(investRate3,taxaOut,
-                                                by = "taxaInvest"))
-##
-
-#vendas por capital#
-
-i_Rate3_Outless <- merge.data.frame(i_Rate3_Outless,
-                                    anti_join(i_Rate3_Outless,vendasOut,
-                                              by = "vendas_K"))
-
-##
-
-#q_tobyn#
-
-
-i_Rate3_Outless <- merge.data.frame(i_Rate3_Outless,
-                                    anti_join(i_Rate3_Outless,TobynOut,
-                                              by = "q_tobyn"))
+                   q_tobyn,
+                   lnVendas,
+                   pcm,
+                   Taxa_Imp))
 
 ################# modelo de painel##################################################
 #####################################################################################
@@ -385,28 +614,76 @@ library(plm)
 #setar o painel#
 
 
-attach(i_Rate3_Outless)
+##raw##
 
-Y <- cbind(as.numeric(taxaInvest))
-X <- cbind(i_Rate3_Outless$vendas_K,
-           i_Rate3_Outless$vendas_K1,
-           i_Rate3_Outless$vendas_K2,
-           i_Rate3_Outless$vendas_K3)
+attach(investRate3)
+
+Y <- cbind(taxaInvest)
+
+attach(investRate3)
+
+X <- cbind(investRate3$Taxa_Imp,
+           investRate3$taxaInvest1,
+           investRate3$q_tobyn,
+           investRate3$vendas_K,
+           investRate3$vendas_K1,
+           investRate3$vendas_K2,
+           investRate3$vendas_K3,
+           investRate3$lnVendas,
+           investRate3$pcm)
+  
+
+
+       
            
 
+dadosIR3 <- pdata.frame(investRate3,
+                     index = c("FIRMA",
+                               "ANO"
+                               ))
 
-dadosIR3 <- pdata.frame(i_Rate3_Outless,
-                     index = c("COD_FIRMA",
-                             "ANO"))
+
+##
+
+## sem outliers##
+
+attach(i_Rate3_Outless)
+
+
+Y2 <- cbind(i_Rate3_Outless$taxaInvest)
+
+X2 <- cbind(i_Rate3_Outless$q_tobyn,
+            i_Rate3_Outless$vendas_K,
+            i_Rate3_Outless$vendas_K1,
+            i_Rate3_Outless$vendas_K2,
+            i_Rate3_Outless$vendas_K3,
+            i_Rate3_Outless$cash_K)
+
+dadosIR3_Out <- pdata.frame(i_Rate3_Outless,
+                            index = c("FIRMA",
+                                      "ANO"))
 
 
 ##sumário##
 
-summary(Y)
-summary(X)
+summary(Y2)
+summary(X2)
+
+
+sum(!is.na(i_Rate3_Outless$vendas_K))
+sum(!is.na(i_Rate3_Outless$taxaInvest))
+sum(!is.na(i_Rate3_Outless$q_tobyn))
+
+######################################################################################
+
+
+ ######################################################################################
+
 
 
 #modelo em painel fixo#
+
+##raw##################################################################################
 
 fixo3 <- plm(Y ~ X,
              data = dadosIR3,
@@ -415,47 +692,58 @@ fixo3 <- plm(Y ~ X,
 
 summary(fixo3)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#taxa de investimento#
-
-i_Rate3_Outless <- merge.data.frame(investRate3,
-                                    anti_join(investRate3,taxaOut,
-                                                by = "taxaInvest"))
 ##
 
-#vendas por capital#
+##teste de efeito de tempo##
 
-i_Rate3_Outless <- merge.data.frame(i_Rate3_Outless,
-                                    anti_join(i_Rate3_Outless,vendasOut,
-                                              by = "vendas_K"))
+attach(dadosIR3)
 
-##
+fixo3_Temp <- plm(Y ~ X + factor(x = ANO),
+                  data = dadosIR3,
+                  index = c("FIRMA",
+                            'ANO'),
+                  model = "within")
+summary(fixo3_Temp)              
 
-#q_tobyn#
+###heteroscedasticidade##
+
+library(lmtest)
+
+bptest( Y ~ X + factor(x = FIRMA),
+        data = dadosIR3,
+        studentize = F)
+
+#Estimação da matrix de covariança robusta#
+
+coeftest(fixo3)
+
+coeftest(fixo3, vcovHC)
+
+coeftest(fixo3, 
+         vcovHC(fixo3,
+                method = "arellano"))
+ 
 
 
-i_Rate3_Outless <- merge.data.frame(i_Rate3_Outless,
-                                    anti_join(i_Rate3_Outless,TobynOut,
-                                              by = "q_tobyn"))
+
+###heteroscedasticidade##
+
+library(lmtest)
+
+bptest( Y ~ X + factor(x = FIRMA),
+        data = dadosIR3,
+        studentize = F)
+
+#Estimação da matrix de covariança robusta#
+
+
+
+coeftest(fixo3, 
+         vcovHC(fixo3,
+                method = "arellano"))
+
+
+coeftest(fixo3Out, 
+         vcovHC(fixo3Out,
+                method = "arellano"))
 
